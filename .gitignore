@@ -1,0 +1,2 @@
+# ignore all the output pdb files
+*.pdb
