@@ -1,2 +1,6 @@
 # ignore all the output pdb files
 *.pdb
+
+# ignore all the .dat files
+*.dat
+

@@ -2,14 +2,15 @@
 
 Let's draw sphere in different ways!
 - [x] Loop #1
-- [ ] Recursion
+- [x] Recursion #1
 - [ ] Others
 
 ***
 
 ## Loop #1
 
-### Benchmark performance: 0.092s
+### Benchmark performance: 0.087s
+### Total points: 125834
 
 ### Method: 
 
@@ -27,10 +28,22 @@ Let's draw sphere in different ways!
 
 ***
 
-## Recursion [TODO]
+### Benchmark performance: 2.988s
+### Total points: 125858
 
-### Benchmark performance: ???
+### Method:
 
-### Method: ???
+1. Go over the first octant, find a qualified point (a, b, c)
+2. Store the point (a, b, c)
+3. Move the point, one direction at one time
+    * (a +/- resolution, b, c)
+    * (a, b +/- resolution, c)
+    * (a, b, c +/- resolution)   
+4. Iterate 8 octants (+,+,+) to (-,-,-)
 
+### Representation (VMD):
+
+![alt text](images/recursion_model.jpg)
+
+***
 
