@@ -4,7 +4,6 @@ import sys
 sys.setrecursionlimit(1000000000)
 import time
 
-RECURSION_SET = set()
 
 # ! ref: https://en.wikipedia.org/wiki/Octant_(solid_geometry)
 OCTANTS = [
@@ -46,7 +45,9 @@ def loop_sphere(radius, resolution, debug = False):
 
     len_range = len(set_range)
 
-    tot_points = set()
+    global RECURSION_SET
+    RECURSION_SET = set()
+
     for (i_z, z) in enumerate(set_range):
         i_x = len_range - 1
         while i_x >= i_z:
@@ -54,24 +55,19 @@ def loop_sphere(radius, resolution, debug = False):
             while i_x >= i_y:
                 s = sum_sqaure(set_range[i_x], set_range[i_y], set_range[i_z])
                 if s >= limit_sq_min and s <= limit_sq_max:
-                    if not debug:
-                        for (s_x, s_y, s_z) in OCTANTS:
-                            p1 = (s_x * set_range[i_x], s_y * set_range[i_y], s_z * set_range[i_z], 'A')
-                            p2 = (s_x * set_range[i_y], s_y * set_range[i_x], s_z * set_range[i_z], 'A')
-                            p3 = (s_x * set_range[i_z], s_y * set_range[i_y], s_z * set_range[i_x], 'A')
-                            for p in [p1, p2, p3]:
-                                tot_points.add(p)
-                    else:
-                        s_x = 1
-                        s_y = 1
-                        s_z = 1
-                        p1 = (s_x * set_range[i_x], s_y * set_range[i_y], s_z * set_range[i_z], 'A')
-                        p2 = (s_x * set_range[i_y], s_y * set_range[i_x], s_z * set_range[i_z], 'A')
-                        p3 = (s_x * set_range[i_z], s_y * set_range[i_y], s_z * set_range[i_x], 'A')
-                        for p in [p1, p2, p3]:
-                            tot_points.add(p)
+                    RECURSION_SET.add( (set_range[i_x], set_range[i_y], set_range[i_z]) )
+                    RECURSION_SET.add( (set_range[i_y], set_range[i_x], set_range[i_z]) )
+                    RECURSION_SET.add( (set_range[i_z], set_range[i_y], set_range[i_x]) )
                 i_y += 1
             i_x -= 1
+    tot_points = set()
+    if not debug:
+        for (s_x, s_y, s_z) in OCTANTS:
+            for p in RECURSION_SET:
+                tot_points.add((s_x * p[0], s_y * p[1], s_z * p[2]))
+    else:
+        tot_points = RECURSION_SET
+
     print(len(tot_points))     
     time_end = time.time()
     time_duration = time_end - time_start
@@ -81,6 +77,10 @@ def loop_sphere(radius, resolution, debug = False):
 
 def recursion_sphere(radius, resolution, debug = False):
     time_start = time.time()
+
+    global RECURSION_SET
+    RECURSION_SET = set()
+
     limit_sq_max = radius + resolution
     limit_sq_min = radius - resolution
     p0 = [radius, 0, 0]
@@ -164,7 +164,6 @@ def debug_test():
 if __name__ == "__main__":
     time_start = time.time()
     debug_test()
-    RECURSION_SET = set()
     benchmark_test()
     time_end = time.time()
     time_duration = time_end - time_start
