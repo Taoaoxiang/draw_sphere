@@ -2,15 +2,23 @@
 
 Let's draw sphere in different ways!
 - [x] Loop #1
+    - [X] Python
+    - [X] C++
 - [x] Recursion #1
+    - [X] Python
+    - [ ] C++
 - [ ] Others
 
 ***
 
 ## Loop #1
 
-### Benchmark performance: 0.087s
-### Total points: 125834
+### Benchmark performance: 
+* Python: 0.087s
+* C++: 0.187s
+### Total points: 
+* Python: 125834
+* C++: 126678
 
 ### Method: 
 
@@ -28,8 +36,12 @@ Let's draw sphere in different ways!
 
 ***
 
-### Benchmark performance: 2.988s
-### Total points: 125858
+### Benchmark performance: 
+* Python: 2.988s
+* C++: 
+### Total points: 
+* Python: 125858
+* C++: 
 
 ### Method:
 
@@ -40,6 +52,11 @@ Let's draw sphere in different ways!
     * (a, b +/- resolution, c)
     * (a, b, c +/- resolution)   
 4. Iterate 8 octants (+,+,+) to (-,-,-)
+
+> **_Note_**:  
+> If the terminal complains about `Segmentation fault (core dumped)`, 
+> modify `ulimit` in termial with the command below:
+> `ulimit -s unlimited`
 
 ### Representation (VMD):
 
