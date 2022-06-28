@@ -27,10 +27,9 @@ def sum_sqaure(a, b, c):
 
 def loop_sphere(radius, resolution, debug = False):
     time_start = time.time()
-    re = []
 
     if radius <= 0:
-        return re
+        return []
 
     if resolution > radius:
         resolution = radius
