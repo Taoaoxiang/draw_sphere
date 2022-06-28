@@ -4,3 +4,5 @@
 # ignore all the .dat files
 *.dat
 
+# ignore all the .out files
+*.out
