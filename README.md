@@ -36,6 +36,8 @@ Let's draw sphere in different ways!
 
 ***
 
+## Recursion #1
+
 ### Benchmark performance: 
 * Python: 2.988s
 * C++: 
