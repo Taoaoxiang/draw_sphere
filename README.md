@@ -6,7 +6,7 @@ Let's draw sphere in different ways!
     - [X] C++
 - [x] Recursion #1
     - [X] Python
-    - [ ] C++
+    - [X] C++
 - [ ] Others
 
 ***
@@ -15,10 +15,10 @@ Let's draw sphere in different ways!
 
 ### Benchmark performance: 
 * Python: 0.087s
-* C++: 0.187s
+* C++: 0.682s
 ### Total points: 
 * Python: 125834
-* C++: 126678
+* C++: 127560
 
 ### Method: 
 
@@ -40,10 +40,10 @@ Let's draw sphere in different ways!
 
 ### Benchmark performance: 
 * Python: 2.988s
-* C++: 
+* C++: 14.581s
 ### Total points: 
 * Python: 125858
-* C++: 
+* C++: 127752
 
 ### Method:
 
