@@ -6,3 +6,6 @@
 
 # ignore all the .out files
 *.out
+
+# ignore .vscode folder
+.vscode
