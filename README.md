@@ -69,8 +69,6 @@ Let's draw sphere in different ways!
 
 ***
 
-***
-
 ## Loop #2 Geometry
 
 ### Benchmark performance: 
@@ -92,3 +90,5 @@ Let's draw sphere in different ways!
 ### Representation (VMD):
 
 ![alt text](images/loop_geometry_model.jpg)
+
+***
