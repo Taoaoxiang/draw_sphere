@@ -8,6 +8,8 @@
 #include <iomanip>
 #include <sstream>
 #include <cmath>
+#include "cuda_runtime.h"
+#include "device_launch_parameters.h"
 
 using namespace std;
 
@@ -28,4 +30,5 @@ set<vector<string>> loopSphere(float, float, bool);
 set<vector<string>> recursionSphere(float, float, bool);
 void recursionSphere(vector<float>, float, float, float, float);
 int writeToPDB(set<vector<string>>, string);
-__global__ void initArr(int*, int, int, float, float, float);
+__global__ 
+void cudaInitArr(int*, int, int, float, float, float);

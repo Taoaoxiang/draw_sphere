@@ -1,7 +1,7 @@
 # draw_sphere
 
 Let's draw sphere in different ways!
-- [x] Loop #1
+- [x] Loop #1 Devide-n-Conquer
     - [X] Python
     - [X] C++
 - [x] Recursion #1
@@ -10,11 +10,15 @@ Let's draw sphere in different ways!
 - [x] Loop #2 Geometry
     - [X] Python
     - [ ] C++
+- [x] Loop #3 Brute-Force
+    - [ ] Python
+    - [X] C++
+    - [X] CUDA
 - [ ] Others
 
 ***
 
-## Loop #1
+## Loop #1 Devide-n-Conquer
 
 ### Benchmark performance: 
 * Python: 0.087s
@@ -35,7 +39,7 @@ Let's draw sphere in different ways!
 
 ### Representation (VMD):
 
-![alt text](images/loop_model.jpg)
+![alt text](images/loop_DnC_model.jpg)
 
 ***
 
@@ -90,5 +94,28 @@ Let's draw sphere in different ways!
 ### Representation (VMD):
 
 ![alt text](images/loop_geometry_model.jpg)
+
+***
+
+## Loop #3 Brute-Force
+
+### Benchmark performance: 
+* Python: 
+* C++: 0.506s
+* CUDA: 0.490s
+### Total points: 
+* Python: 
+* C++: 127856
+* CUDA: 127840
+
+### Method: 
+
+1. Generate 1-D array, length: ((N+1) * (N+1) * (N+1))
+2. Iterate the array, mark qualified points in the megenta region
+3. Iterate 8 octants (+,+,+) to (-,-,-)
+
+### Representation (VMD):
+
+![alt text](images/loop_BF_model.jpg)
 
 ***
