@@ -1,34 +1,27 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <ctime>
-#include <chrono>
-#include <set>
-#include <vector>
-#include <iomanip>
-#include <sstream>
-#include <cmath>
-#include "cuda_runtime.h"
-#include "device_launch_parameters.h"
+#ifndef SPHERE_H
+#define SPHERE_H
+// #pragma once
+
+
+#include "utils.h"
+
 
 using namespace std;
 
-set<vector<string>> RECURSION_SET;
-vector<vector<int>> OCTANTS = {
-    {1,1,+1}, {-1,1,+1}, {-1,-1,+1}, {1,-1,+1},
-    {1,1,-1}, {-1,1,-1}, {-1,-1,-1}, {1,-1,-1}
-};
-
-auto timeMillisecond();
-inline float sumSquare(float, float, float);
-inline string f2s(float, int);
-template <typename T> inline string number2string(T, int);
-inline vector<string> vF2vS(vector<float>, int);
-template <typename T> inline vector<string> vector2vecString(vector<T>, int);
-
+// forward declaration
 set<vector<string>> loopSphere(float, float, bool);
+set<vector<string>> loopSphere(float, float);
+
+set<vector<string>> loopSphereBruteForce(float, float, bool);
+set<vector<string>> loopSphereBruteForce(float, float);
+
+set<vector<string>> loopSphereBruteForceCUDA(float , float , bool);
+set<vector<string>> loopSphereBruteForceCUDA(float , float);
+
+
 set<vector<string>> recursionSphere(float, float, bool);
-void recursionSphere(vector<float>, float, float, float, float);
-int writeToPDB(set<vector<string>>, string);
-__global__ 
-void cudaInitArr(int*, int, int, float, float, float);
+set<vector<string>> recursionSphere(float, float);
+
+
+
+#endif
