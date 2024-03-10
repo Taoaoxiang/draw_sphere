@@ -1,7 +1,12 @@
 all: sphere
 
+sphere: prepare main
+
+prepare:
+	mkdir -p $(BUILD) $(BIN)
+
 clean: 
-	rm -f $(BUILD)/*.o sphere
+	rm -f $(BUILD)/*.o $(BIN)/*
 
 # define the compiler
 CC = g++
@@ -9,12 +14,13 @@ NVCC = nvcc
 
 # define any compile-time flags
 CFLAGS = -Wall -g -std=c++2a -O3
-NVCCFLAGS = -O3
+NVCCFLAGS = -O3 --std c++17
 
 # define any directories containing header files other than /usr/include
 INCLUDES = -I./include 
 BUILD=./build
 SOURCE=./src
+BIN=./bin
 OBJS=$(BUILD)/utils.o \
 	$(BUILD)/sphereLoopDnC.o \
 	$(BUILD)/sphereLoopBF.o \
@@ -41,5 +47,7 @@ $(BUILD)/sphereRecursion.o : $(SOURCE)/sphereRecursion.cpp
 $(BUILD)/sphereLoopBFCUDA.o : $(SOURCE)/sphereLoopBFCUDA.cu
 	$(NVCC) $(NVCCFLAGS) $(INCLUDES) -c $(SOURCE)/sphereLoopBFCUDA.cu -o $(BUILD)/sphereLoopBFCUDA.o
 
-sphere: $(OBJS)
-	$(NVCC) $(INCLUDES) $(OBJS) -o sphere main.cpp
+main: $(OBJS)
+	$(NVCC) $(NVCCFLAGS) $(INCLUDES) $(OBJS) -o $(BIN)/sphere main.cpp
+	$(BIN)/sphere
+

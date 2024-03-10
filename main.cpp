@@ -9,9 +9,8 @@ void benchmarkTest()
 
     string dir = "output";
 
-    namespace fs = std::filesystem;
-    if (!fs::is_directory(dir) || !fs::exists(dir)) { 
-        fs::create_directory(dir); 
+    if (!filesystem::is_directory(dir) || !filesystem::exists(dir)) { 
+        filesystem::create_directory(dir); 
     }
 
     string pdb;
@@ -68,9 +67,8 @@ void debugTest()
 
     string dir = "output";
 
-    namespace fs = std::filesystem;
-    if (!fs::is_directory(dir) || !fs::exists(dir)) { 
-        fs::create_directory(dir); 
+    if (!filesystem::is_directory(dir) || !filesystem::exists(dir)) { 
+        filesystem::create_directory(dir); 
     }
 
     string pdb;
