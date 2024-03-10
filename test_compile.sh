@@ -3,7 +3,7 @@
 
 mkdir -p build
 
-g++ -c -I./include -o build/utils.o src/utils.cpp
+g++ -c -std=c++17 -I./include -o build/utils.o src/utils.cpp
 
 g++ -c -I./include -o build/sphereLoopDnC.o  src/sphereLoopDnC.cpp 
 
@@ -16,7 +16,7 @@ nvcc -c -I./include -o build/sphereLoopBFCUDA.o  src/sphereLoopBFCUDA.cu
 
 objs="build/sphereLoopDnC.o build/utils.o build/sphereLoopBF.o build/sphereRecursion.o build/sphereLoopBFCUDA.o"
 
-nvcc -I./include -o main.out  \
+nvcc -I./include --std c++17 -o main.out  \
     ${objs} main.cpp 
 
 ./main.out

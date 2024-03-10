@@ -14,6 +14,10 @@ Let's draw sphere in different ways!
     - [ ] Python
     - [X] C++
     - [X] CUDA
+- [x] Loop #4 Brute-Force All
+    - [ ] Python
+    - [X] C++
+    - [X] CUDA
 - [ ] Others
 
 ***
@@ -117,5 +121,27 @@ Let's draw sphere in different ways!
 ### Representation (VMD):
 
 ![alt text](images/loop_BF_model.jpg)
+
+***
+
+## Loop #3 Brute-Force All
+
+### Benchmark performance: 
+* Python: 
+* C++: 0.518s
+* CUDA: 0.508s
+### Total points: 
+* Python: 
+* C++: 125930
+* CUDA: 125914
+
+### Method: 
+
+1. Generate 1-D array, length: ((2N+1) * (2N+1) * (2N+1))
+2. Iterate the array, mark qualified points in the yellow region
+
+### Representation (VMD):
+
+![alt text](images/loop_BFAll_model.jpg)
 
 ***

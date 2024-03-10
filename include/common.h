@@ -12,6 +12,7 @@
 #include <iomanip>
 #include <sstream>
 #include <cmath>
+#include <filesystem> 
 
 // if the compiler is nvcc
 #ifdef __CUDACC__

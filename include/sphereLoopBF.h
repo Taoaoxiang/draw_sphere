@@ -13,7 +13,11 @@ set<vector<string>> loopSphereBruteForce(float, float, bool);
 set<vector<string>> loopSphereBruteForce(float, float);
 
 void cpuInitArr(int* , int , int , float , float , float );
+void cpuInitArrAll(int* , float*, int , int , float , float , float );
 
+
+set<vector<string>> loopSphereBruteForceAll(float, float, bool);
+set<vector<string>> loopSphereBruteForceAll(float, float);
 
 #endif
 
