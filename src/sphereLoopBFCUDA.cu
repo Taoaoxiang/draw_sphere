@@ -96,6 +96,38 @@ void cudaInitArrAll(int* arr,
     }
 }
 
+__global__ 
+void cudaInitArrAll(
+                 float *coor,
+                 int ROW, 
+                 int len, 
+                 float resolution, 
+                 float max, float min)
+{
+    // int i = threadIdx.x;
+    int index = threadIdx.x;
+    int stride = blockDim.x;
+
+    for (int i = index; i < ROW; i+=stride) {
+        // 1. grows in z direction, from 0 to len
+        float z = (float( i % (2*len+1)) - len)                 * resolution;
+        // 2. grows in y direction, from 0 to len
+        float y = (float( i/(2*len+1) % (2*len+1))-len)           * resolution;
+        // 3. grows in x direction, from 0 to len
+        float x = (float( i/((2*len+1)*(2*len+1)) % (2*len+1))-len) * resolution;
+        
+        float sum = (x*x)+(y*y)+(z*z);
+        if (sum>=min && sum<=max) {
+            coor[i] = x;
+            coor[i+ROW] = y;
+            coor[i+ROW*2] = z;
+            coor[i+ROW*3] = 1;
+        } else {
+            coor[i+ROW*3] = 0;
+        }
+    }
+}
+
 set<vector<string>> loopSphereBruteForceCUDA(float radius, float resolution)
 {
     return loopSphereBruteForceCUDA(radius, resolution, false);
@@ -325,4 +357,62 @@ set<vector<string>> loopSphereBruteForceAllCUDA(float radius, float resolution, 
 }
 
 
+set<vector<string>> loopSphereBruteForceAll2CUDA(float radius, float resolution)
+{
+    return loopSphereBruteForceAll2CUDA(radius, resolution, false);
+}
+
+set<vector<string>> loopSphereBruteForceAll2CUDA(float radius, float resolution, bool debug = false)
+{
+
+    std::set<std::vector<std::string>> RECURSION_SET;
+
+    RECURSION_SET.clear();
+    auto timeStart = timeMillisecond();
+    set<vector<string>> re;
+    if (radius <= 0) {
+        return re;
+    }
+
+    if (resolution > radius) {
+        resolution = radius;
+    }
+
+    float limitSquareMax = radius + resolution;
+    float limitSquareMin = radius - resolution;
+
+    int len = int(radius / resolution);
+    int ROW = (2*len + 1) * (2*len + 1) * (2*len + 1); 
+    int COL = 4;
+    float *coor, *gpu_coor;
+    
+    #define BLOCK_SIZE 256
+    #define GRID_SIZE 100
+
+    // coor: 2D array (N,COL) to 1D array (N*COL)
+    coor = (float*)malloc(sizeof(float*) * ROW * COL);
+    cudaMalloc((void**)&gpu_coor, sizeof(float) * ROW * COL);
+
+    cudaInitArrAll<<<GRID_SIZE, BLOCK_SIZE>>>
+        (gpu_coor, ROW, len, resolution, limitSquareMax, limitSquareMin);
+
+    cudaMemcpy(coor, gpu_coor, sizeof(float) * ROW * COL,cudaMemcpyDeviceToHost); 
+   
+    for (int i = 0; i < ROW; i++) {
+        if (coor[i+ROW*3] > 0.99) {
+            float x = coor[i];
+            float y = coor[i+ROW];
+            float z = coor[i+ROW+ROW];
+            RECURSION_SET.insert( vector<string> {f2s(x), f2s(y), f2s(z)});
+        } 
+    }
+    re = RECURSION_SET;
+
+    cudaFree(gpu_coor);
+
+    cout << re.size() << endl; 
+    auto timeDuration = timeMillisecond() - timeStart;
+    cout << "Duration (ms) [function: loopSphereBruteForceAllCUDA2]: " << timeDuration << endl; 
+    return re;
+}
 

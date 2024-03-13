@@ -21,4 +21,9 @@ void cudaInitArrAll(int*, float*, int, int, float, float, float);
 set<vector<string>> loopSphereBruteForceAllCUDA(float, float, bool);
 set<vector<string>> loopSphereBruteForceAllCUDA(float, float);
 
+__global__ 
+void cudaInitArrAll(float*, int, int, float, float, float);
+set<vector<string>> loopSphereBruteForceAll2CUDA(float, float, bool);
+set<vector<string>> loopSphereBruteForceAll2CUDA(float, float);
+
 #endif

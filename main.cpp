@@ -49,6 +49,12 @@ void benchmarkTest()
     pdb = dir + "/" + "benchmark_loop_BFAll_CUDA.pdb";
     writeToPDB(totPoints, pdb);
 
+    // Time(ms): 503
+    // Points: 125914
+    totPoints = loopSphereBruteForceAll2CUDA(1.0, 0.01);
+    pdb = dir + "/" + "benchmark_loop_BFAll2_CUDA.pdb";
+    writeToPDB(totPoints, pdb);
+
     // Time(ms): 518
     // Points: 125930
     totPoints = loopSphereBruteForceAll(1.0, 0.01);
