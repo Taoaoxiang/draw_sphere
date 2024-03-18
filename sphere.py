@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
-import sys
+import sys, os
 sys.setrecursionlimit(1000000000)
 import time
 import math
+from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
+import pickle, json
 
 
 # ! ref: https://en.wikipedia.org/wiki/Octant_(solid_geometry)
@@ -11,6 +13,8 @@ OCTANTS = [
     (1,1,+1), (-1,1,+1), (-1,-1,+1), (1,-1,+1),
     (1,1,-1), (-1,1,-1), (-1,-1,-1), (1,-1,-1)
 ]
+
+DICT_INIT_DATA = {}
 
 def get_range(radius, resolution):
     resolution = round(resolution, 3)
@@ -202,6 +206,179 @@ def loop_sphere_geometry(radius, resolution, debug = False):
     
     return (tot_points)
 
+def RF_class_model_training(arr_x, arr_y, arr_test):
+    rf_class = RandomForestClassifier(max_depth=2, random_state=0)
+    rf_class.fit(arr_x, arr_y)
+    
+    re = rf_class.predict(arr_test)
+    pickle.dump(rf_class, open("output/RF_class_model.pkl", "wb"))
+    print("TEST, prediction: ", re)
+    return rf_class
+
+def RF_regr_model_training(arr_x, arr_y, arr_test):
+    rf_regr = RandomForestRegressor(max_depth=2, random_state=0)
+    rf_regr.fit(arr_x, arr_y)
+    
+    re = rf_regr.predict(arr_test)
+    pickle.dump(rf_regr, open("output/RF_regr_model.pkl", "wb"))
+    print("TEST, prediction: ", re)
+    return rf_regr
+
+def RF_regr_model(radius, resolution, debug = False):
+    time_start = time.time()
+
+    if radius <= 0:
+        return []
+
+    if resolution > radius:
+        resolution = radius
+
+    limit_sq_max = radius + resolution
+    limit_sq_min = radius - resolution
+
+    len1 = int(radius / resolution)
+    ROW1 = (len1 + 1) * (len1 + 1) * (len1 + 1)
+   
+    global DICT_INIT_DATA
+    pkl_file = "output/RF_regr_model.pkl"
+    if os.path.exists(pkl_file):
+        print("Load model from pkl file => ", pkl_file)
+        rf_model = pickle.load(open(pkl_file, "rb"))
+    else:
+        rf_model = RF_regr_model_training(
+            DICT_INIT_DATA["training"]["x"], DICT_INIT_DATA["training"]["class_y"], 
+            [[1, 0.0, 0.001], [1, 0.2, 0.2], [0.3, 0.3, 0.3]])
+        pickle.dump(rf_model, open(pkl_file, "wb"))
+       
+
+
+
+    arr_test_y = rf_model.predict(DICT_INIT_DATA["training"]["x"])
+
+    tot_points = set()
+    fo = open("test_regr.txt", "w")
+
+    for i in range(len(arr_test_y)):
+        fo.write(str(arr_test_y[i]) + "\n")
+        if arr_test_y[i] >= 0.016:
+            tot_points.add(
+                (DICT_INIT_DATA["training"]["x"][i][0], 
+                 DICT_INIT_DATA["training"]["x"][i][1], 
+                 DICT_INIT_DATA["training"]["x"][i][2]))
+    fo.close()
+
+    print(len(tot_points))     
+    time_end = time.time()
+    time_duration = time_end - time_start
+    print("Duration (s) [function: RF_regression]: %5.3f" %time_duration)
+    
+    return (tot_points)
+    
+
+
+def RF_class_model(radius, resolution, debug = False):
+    time_start = time.time()
+
+    if radius <= 0:
+        return []
+
+    if resolution > radius:
+        resolution = radius
+
+    limit_sq_max = radius + resolution
+    limit_sq_min = radius - resolution
+
+    len1 = int(radius / resolution)
+    ROW1 = (len1 + 1) * (len1 + 1) * (len1 + 1)
+
+    pkl_file = "output/init_data.pkl"
+
+    global DICT_INIT_DATA
+    if len(DICT_INIT_DATA) > 0:
+        print("Use data from DICT_INIT_DATA")
+    elif os.path.exists(pkl_file):
+        print("Load data from pkl file => ", pkl_file)
+        with open(pkl_file, 'rb') as f:
+            DICT_INIT_DATA = pickle.load(f)
+    else:
+        dict_training = initArr(
+            ROW1, len1, resolution, limit_sq_max, limit_sq_min, training=1)
+        len2 = int(2 * radius / resolution)
+        ROW2 = (2 * len2 + 1) * (2 * len2 + 1) * (2 * len2 + 1)
+        dict_test = initArr(
+            ROW2, len2, resolution, limit_sq_max, limit_sq_min, training=0)
+        DICT_INIT_DATA = {
+            "training": dict_training,
+            "test": dict_test
+        }
+        with open(pkl_file, 'wb') as f:
+            pickle.dump(DICT_INIT_DATA, f)
+        json_file = "output/init_data_training.json"
+        with open(json_file, 'w') as f:
+            json.dump(DICT_INIT_DATA["training"], f)
+    
+    pkl_file = "output/RF_class_model.pkl"
+    if os.path.exists(pkl_file):
+        print("Load model from pkl file => ", pkl_file)
+        rf_model = pickle.load(open(pkl_file, "rb"))
+    else:
+        rf_model = RF_class_model_training(
+            DICT_INIT_DATA["training"]["x"], DICT_INIT_DATA["training"]["class_y"], 
+            [[1, 0.0, 0.001], [1, 0.2, 0.2], [0.3, 0.3, 0.3]])
+        pickle.dump(rf_model, open(pkl_file, "wb"))
+    
+
+
+
+    # arr_test_y = rf_model.predict(DICT_INIT_DATA["test"]["x"])
+    arr_test_y = rf_model.predict(DICT_INIT_DATA["training"]["x"])
+
+    tot_points = set()
+    fo = open("test_class.txt", "w")
+    for i in range(len(arr_test_y)):
+        fo.write(str(arr_test_y[i]) + "\n")
+        if arr_test_y[i] >= 0.5:
+            tot_points.add((DICT_INIT_DATA["training"]["x"][i][0], DICT_INIT_DATA["training"]["x"][i][1], DICT_INIT_DATA["training"]["x"][i][2]))
+            # tot_points.add((DICT_INIT_DATA["test"]["x"][i][0], DICT_INIT_DATA["test"]["x"][i][1], DICT_INIT_DATA["test"]["x"][i][2]))
+    fo.close()
+    print(len(tot_points))     
+    time_end = time.time()
+    time_duration = time_end - time_start
+    print("Duration (s) [function: RF_classification]: %5.3f" %time_duration)
+    
+    return (tot_points)
+    
+def initArr(ROW, len, resolution, max, min, training = 1):
+    re_dict = {
+        "x": [],
+        "class_y": [],
+        "regr_y": []
+    }
+
+    if training == 1:
+        for i in range(ROW):
+            z = (i % (len + 1))                   * resolution
+            y = (i/(len+1) % (len + 1))           * resolution
+            x = (i/((len+1)*(len+1)) % (len + 1)) * resolution
+            re_dict["x"].append([x, y, z])
+
+            sum = x*x + y*y + z*z
+
+            re_dict["regr_y"].append(sum)
+
+            if (sum >= min and sum <= max):
+                re_dict["class_y"].append(1)
+            else:
+                re_dict["class_y"].append(0)
+    elif training == 0:
+        for i in range(ROW):
+            z = (i % (2*len + 1) - len)                   * resolution
+            y = (i/(2*len+1) % (2*len + 1) - len)           * resolution
+            x = (i/((2*len+1)*(2*len+1)) % (2*len + 1) - len) * resolution
+            re_dict["x"].append([x, y, z])
+
+    return re_dict
+
 
 def write_to_pdb(tot_points, fname = "sphere_test_out.pdb"):
     with open(fname, 'w') as fo:
@@ -247,17 +424,23 @@ def debug_test():
     tot_points = loop_sphere(1, 0.01, True)
     write_to_pdb(tot_points, fname = "debug_loop.pdb")
 
-    tot_points = recursion_sphere(1, 0.01, True)
-    write_to_pdb(tot_points, fname = "debug_recursion.pdb")
+    # tot_points = recursion_sphere(1, 0.01, True)
+    # write_to_pdb(tot_points, fname = "debug_recursion.pdb")
 
-    tot_points = loop_sphere_geometry(1, 0.01, True)
-    write_to_pdb(tot_points, fname = "debug_loop_geometry.pdb")
+    # tot_points = loop_sphere_geometry(1, 0.01, True)
+    # write_to_pdb(tot_points, fname = "debug_loop_geometry.pdb")
+
+    tot_points = RF_class_model(1, 0.01, True)
+    write_to_pdb(tot_points, fname = "debug_RF_classification.pdb")
+
+    tot_points = RF_regr_model(1, 0.01, True)
+    write_to_pdb(tot_points, fname = "debug_RF_regression.pdb")
     print("====Debug Finished====\n")
 
 if __name__ == "__main__":
     time_start = time.time()
     debug_test()
-    benchmark_test()
+    # benchmark_test()
     time_end = time.time()
     time_duration = time_end - time_start
     print("Runtime (s): %5.3f" %time_duration)

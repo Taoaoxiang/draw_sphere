@@ -18,6 +18,10 @@ Let's draw sphere in different ways!
     - [ ] Python
     - [X] C++
     - [X] CUDA
+- [?] Random Forest Classification
+    - [?] Failed
+- [?] Random Forest Regression
+    - [?] Failed
 - [ ] Others
 
 ***
@@ -145,3 +149,19 @@ Let's draw sphere in different ways!
 ![alt text](images/loop_BFAll_model.jpg)
 
 ***
+
+
+## Random Forest Regression
+
+### Benchmark performance: 
+* Python: 
+### Total points: 
+* Python: 
+
+### Method: 
+1. Training on the red dots
+2. Test
+
+### Representation (VMD):
+
+![alt text](images/RF_regr_model_failed.jpg)
